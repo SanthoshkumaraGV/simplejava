@@ -7,7 +7,7 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
+        stage('build') {
             steps {
                 // Check out the code from the Git repository
                 git 'https://github.com/SanthoshkumaraGV/simplejava.git'  // Replace with your repo URL
