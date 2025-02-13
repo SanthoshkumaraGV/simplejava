@@ -1,35 +1,50 @@
-// Jenkinsfile
 pipeline {
     agent any
 
     environment {
-        JAVA_HOME = '/usr/lib/jvm/java-11-openjdk'  // Define Java version to use (adjust as necessary)
-        PATH = "$JAVA_HOME/bin:$PATH"
+        JAVA_HOME = '/usr/lib/jvm/java-17-openjdk'  // Define the Java version to use
+        PATH = "$JAVA_HOME/bin:$PATH"  // Ensure Java binaries are on the PATH
     }
 
     stages {
         stage('Checkout') {
             steps {
-                // Check out the code from your repository
+                // Check out the code from the Git repository
                 git 'https://github.com/SanthoshkumaraGV/simplejava.git'  // Replace with your repo URL
             }
         }
 
         stage('Compile') {
             steps {
-                // Compile the Java program
+                // Compile the Java program using javac
                 script {
-                    sh 'javac simple.java'  // Compile the Java program using javac
+                    sh 'javac simple.java'  // Compiling the HelloWorld.java file
                 }
             }
         }
 
-        stage('Run') {
+        stage('Package') {
             steps {
-                // Run the compiled Java program
+                // Package the compiled classes into a JAR file using jar
                 script {
-                    sh 'java simple'  // Run the program using java command
+                    sh 'jar cf simple.jar simple.class'  // Create the JAR file
                 }
+            }
+        }
+
+        stage('Run JAR') {
+            steps {
+                // Run the generated JAR file
+                script {
+                    sh 'java -jar simple.jar'  // Run the JAR file
+                }
+            }
+        }
+
+        stage('Archive JAR') {
+            steps {
+                // Archive the JAR file
+                archiveArtifacts artifacts: 'simple.jar', allowEmptyArchive: true
             }
         }
     }
@@ -39,7 +54,7 @@ pipeline {
             echo 'Build and execution succeeded!'
         }
         failure {
-            echo 'Build or execution failed.'
+            echo 'Build failed.'
         }
     }
 }
